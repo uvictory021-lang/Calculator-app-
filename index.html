@@ -1,221 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Victohm’s Science Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Victohm's Science Calculator</title>
 <link rel="manifest" href="/calculator-app/manifest.json">
+<meta name="theme-color" content="#00ff99">
 <style>
-  * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
-  body {
-    background: #0d1117;
-    color: #fff;
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #0d1117;
+    color: #00ff99;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
   }
-
-  /* --- Welcome Page --- */
-  #welcome {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, #141a22, #0d1117);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: fadeOut 1s ease 4s forwards;
-    z-index: 100;
-  }
-  @keyframes fadeOut {
-    to {opacity: 0; visibility: hidden;}
-  }
-  #welcome img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 15px;
-  }
-  #welcome h1 {
-    color: #00ff99;
-    font-size: 1.8rem;
-    text-shadow: 0 0 10px #00ff99;
-    animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse {
-    0%,100% {opacity: 0.9;}
-    50% {opacity: 1;}
-  }
-
-  /* --- Calculator --- */
-  .calculator {
-    width: 95vw;
-    max-width: 420px;
-    background: #161b22;
-    border-radius: 16px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.6);
-    padding: 15px;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .display {
-    width: 100%;
+  #intro { text-align: center; }
+  #intro img { width: 150px; height: 150px; border-radius: 20px; }
+  #calculator { display: none; flex-direction: column; align-items: center; }
+  #display {
+    width: 320px;
+    height: 60px;
+    margin-bottom: 10px;
+    text-align: right;
+    font-size: 24px;
+    padding: 5px;
+    border: 2px solid #00ff99;
+    border-radius: 10px;
     background: #0d1117;
     color: #00ff99;
-    font-size: 1.5rem;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: right;
-    word-wrap: break-word;
-    min-height: 50px;
   }
-
   .buttons {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 50px);
     gap: 8px;
+    justify-content: center;
   }
-
   button {
-    padding: 15px;
-    font-size: 1rem;
-    background: #21262d;
+    padding: 12px;
+    font-size: 16px;
     border: none;
     border-radius: 8px;
-    color: #fff;
-    transition: 0.2s;
+    background-color: #1c1c1c;
+    color: #00ff99;
+    cursor: pointer;
   }
-  button:active {transform: scale(0.95);}
-  button:hover {background: #30363d;}
-  .equal {
-    grid-column: span 2;
-    background: #00ff99;
-    color: #000;
-    font-weight: bold;
-  }
-
-  /* --- Responsive --- */
-  @media (max-width: 480px) {
-    .display {font-size: 1.3rem;}
-    button {padding: 12px; font-size: 0.9rem;}
-  }
+  button:hover { background-color: #333; }
 </style>
 </head>
 <body>
 
-<!-- Welcome Screen -->
-<div id="welcome">
-  <img src="logo.jpg" alt="Victohm Logo" />
-  <h1>Victohm’s Science</h1>
+<div id="intro">
+  <img src="/Calculator-app/logo.jpg" alt="Logo">
+  <h1>Victohm's Science</h1>
 </div>
 
-<!-- Calculator -->
-<div class="calculator" id="calc">
-  <div class="display" id="display">0</div>
+<div id="calculator">
+  <input type="text" id="display" readonly>
   <div class="buttons">
-    <button onclick="clearDisplay()">AC</button>
-    <button onclick="del()">DEL</button>
-    <button onclick="append('(')">(</button>
-    <button onclick="append(')')">)</button>
-    <button onclick="append('/')">÷</button>
+    <!-- Row 1 -->
+    <button onclick="clearDisplay()">C</button>
+    <button onclick="backspace()">⌫</button>
+    <button onclick="appendValue('(')">(</button>
+    <button onclick="appendValue(')')">)</button>
+    <button onclick="appendValue('**')">^</button>
+    <button onclick="appendValue('/')">÷</button>
 
-    <button onclick="append('7')">7</button>
-    <button onclick="append('8')">8</button>
-    <button onclick="append('9')">9</button>
-    <button onclick="append('*')">×</button>
-    <button onclick="append('^')">xʸ</button>
+    <!-- Row 2 -->
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button onclick="appendValue('*')">×</button>
+    <button onclick="appendValue('Math.sqrt(')">√</button>
+    <button onclick="appendValue('Math.pow(')">xʸ</button>
 
-    <button onclick="append('4')">4</button>
-    <button onclick="append('5')">5</button>
-    <button onclick="append('6')">6</button>
-    <button onclick="append('-')">−</button>
-    <button onclick="append('√(')">√</button>
+    <!-- Row 3 -->
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button onclick="appendValue('-')">−</button>
+    <button onclick="appendValue('Math.sin(')">sin</button>
+    <button onclick="appendValue('Math.cos(')">cos</button>
 
-    <button onclick="append('1')">1</button>
-    <button onclick="append('2')">2</button>
-    <button onclick="append('3')">3</button>
-    <button onclick="append('+')">+</button>
-    <button onclick="append('π')">π</button>
+    <!-- Row 4 -->
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button onclick="appendValue('+')">+</button>
+    <button onclick="appendValue('Math.tan(')">tan</button>
+    <button onclick="appendValue('Math.log(')">log</button>
 
-    <button onclick="append('0')">0</button>
-    <button onclick="append('.')">.</button>
-    <button class="equal" onclick="calculate()">=</button>
-    <button onclick="append('sin(')">sin</button>
-    <button onclick="append('cos(')">cos</button>
-
-    <button onclick="append('tan(')">tan</button>
-    <button onclick="append('log(')">log</button>
-    <button onclick="append('ln(')">ln</button>
-    <button onclick="append('!')">n!</button>
-    <button onclick="append('exp(')">exp</button>
+    <!-- Row 5 -->
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button onclick="calculateResult()">=</button>
+    <button onclick="appendValue('%')">%</button>
+    <button onclick="appendValue('Math.exp(')">eˣ</button>
+    <button onclick="appendValue('Math.ln(')">ln</button>
   </div>
 </div>
 
 <script>
-const welcome = document.getElementById("welcome");
-const calc = document.getElementById("calc");
-const display = document.getElementById("display");
-
 setTimeout(() => {
-  welcome.style.display = "none";
-  calc.style.display = "flex";
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('calculator').style.display = 'flex';
 }, 5000);
 
-let expr = "";
+const display = document.getElementById('display');
 
-function append(val) {
-  if (display.textContent === "0") display.textContent = "";
-  display.textContent += val;
-  expr = display.textContent;
+function appendValue(val) {
+  display.value += val;
 }
 
 function clearDisplay() {
-  display.textContent = "0";
-  expr = "";
+  display.value = '';
 }
 
-function del() {
-  display.textContent = display.textContent.slice(0, -1) || "0";
-  expr = display.textContent;
+function backspace() {
+  display.value = display.value.slice(0, -1);
 }
 
-function factorial(n) {
-  if (n < 0) return NaN;
-  if (n === 0 || n === 1) return 1;
-  return n * factorial(n - 1);
-}
-
-function calculate() {
+function calculateResult() {
   try {
-    let input = expr
-      .replace(/π/g, "Math.PI")
-      .replace(/√/g, "Math.sqrt")
-      .replace(/sin/g, "Math.sin")
-      .replace(/cos/g, "Math.cos")
-      .replace(/tan/g, "Math.tan")
-      .replace(/log/g, "Math.log10")
-      .replace(/ln/g, "Math.log")
-      .replace(/exp/g, "Math.exp")
-      .replace(/(\d+)!/g, "factorial($1)")
-      .replace(/\^/g, "**");
-
-    const result = eval(input);
-    display.textContent = result.toString().length > 10 ? result.toPrecision(10) : result;
-    expr = result.toString();
-  } catch (e) {
-    display.textContent = "Error";
+    let result = eval(display.value);
+    display.value = result;
+  } catch {
+    display.value = 'Error';
   }
 }
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/calculator-app/service-worker.js')
+    .then(() => console.log('service Worker Registered'))
+    .catch(err => console.log('service Worker Failed:', err));
+}
 </script>
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/calculator-app/service-worker.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch((err) => console.log("Service Worker Failed:", err));
-  }
-</script>
+
 </body>
-</html>
+ </html>
