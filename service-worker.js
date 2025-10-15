@@ -2,10 +2,10 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open('victohm-cache').then((cache) => {
       return cache.addAll([
-        './',
-        './index.html',
-        './logo.png',
-        './manifest.json'
+        '/calculator-app/',
+        '/calculator-app/index.html',
+        '/calculator-app/manifest.json',
+        '/calculator-app/logo.png'
       ]);
     })
   );
