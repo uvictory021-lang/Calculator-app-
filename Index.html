@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Victohm’s Science Calculator</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
+  body {
+    background: #0d1117;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  /* --- Welcome Page --- */
+  #welcome {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #141a22, #0d1117);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 1s ease 4s forwards;
+    z-index: 100;
+  }
+  @keyframes fadeOut {
+    to {opacity: 0; visibility: hidden;}
+  }
+  #welcome img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 15px;
+  }
+  #welcome h1 {
+    color: #00ff99;
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px #00ff99;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%,100% {opacity: 0.9;}
+    50% {opacity: 1;}
+  }
+
+  /* --- Calculator --- */
+  .calculator {
+    width: 95vw;
+    max-width: 420px;
+    background: #161b22;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    padding: 15px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .display {
+    width: 100%;
+    background: #0d1117;
+    color: #00ff99;
+    font-size: 1.5rem;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: right;
+    word-wrap: break-word;
+    min-height: 50px;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+
+  button {
+    padding: 15px;
+    font-size: 1rem;
+    background: #21262d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    transition: 0.2s;
+  }
+  button:active {transform: scale(0.95);}
+  button:hover {background: #30363d;}
+  .equal {
+    grid-column: span 2;
+    background: #00ff99;
+    color: #000;
+    font-weight: bold;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 480px) {
+    .display {font-size: 1.3rem;}
+    button {padding: 12px; font-size: 0.9rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Welcome Screen -->
+<div id="welcome">
+  <img src="logo.jpg" alt="Victohm Logo" />
+  <h1>Victohm’s Science</h1>
+</div>
+
+<!-- Calculator -->
+<div class="calculator" id="calc">
+  <div class="display" id="display">0</div>
+  <div class="buttons">
+    <button onclick="clearDisplay()">AC</button>
+    <button onclick="del()">DEL</button>
+    <button onclick="append('(')">(</button>
+    <button onclick="append(')')">)</button>
+    <button onclick="append('/')">÷</button>
+
+    <button onclick="append('7')">7</button>
+    <button onclick="append('8')">8</button>
+    <button onclick="append('9')">9</button>
+    <button onclick="append('*')">×</button>
+    <button onclick="append('^')">xʸ</button>
+
+    <button onclick="append('4')">4</button>
+    <button onclick="append('5')">5</button>
+    <button onclick="append('6')">6</button>
+    <button onclick="append('-')">−</button>
+    <button onclick="append('√(')">√</button>
+
+    <button onclick="append('1')">1</button>
+    <button onclick="append('2')">2</button>
+    <button onclick="append('3')">3</button>
+    <button onclick="append('+')">+</button>
+    <button onclick="append('π')">π</button>
+
+    <button onclick="append('0')">0</button>
+    <button onclick="append('.')">.</button>
+    <button class="equal" onclick="calculate()">=</button>
+    <button onclick="append('sin(')">sin</button>
+    <button onclick="append('cos(')">cos</button>
+
+    <button onclick="append('tan(')">tan</button>
+    <button onclick="append('log(')">log</button>
+    <button onclick="append('ln(')">ln</button>
+    <button onclick="append('!')">n!</button>
+    <button onclick="append('exp(')">exp</button>
+  </div>
+</div>
+
+<script>
+const welcome = document.getElementById("welcome");
+const calc = document.getElementById("calc");
+const display = document.getElementById("display");
+
+setTimeout(() => {
+  welcome.style.display = "none";
+  calc.style.display = "flex";
+}, 5000);
+
+let expr = "";
+
+function append(val) {
+  if (display.textContent === "0") display.textContent = "";
+  display.textContent += val;
+  expr = display.textContent;
+}
+
+function clearDisplay() {
+  display.textContent = "0";
+  expr = "";
+}
+
+function del() {
+  display.textContent = display.textContent.slice(0, -1) || "0";
+  expr = display.textContent;
+}
+
+function factorial(n) {
+  if (n < 0) return NaN;
+  if (n === 0 || n === 1) return 1;
+  return n * factorial(n - 1);
+}
+
+function calculate() {
+  try {
+    let input = expr
+      .replace(/π/g, "Math.PI")
+      .replace(/√/g, "Math.sqrt")
+      .replace(/sin/g, "Math.sin")
+      .replace(/cos/g, "Math.cos")
+      .replace(/tan/g, "Math.tan")
+      .replace(/log/g, "Math.log10")
+      .replace(/ln/g, "Math.log")
+      .replace(/exp/g, "Math.exp")
+      .replace(/(\d+)!/g, "factorial($1)")
+      .replace(/\^/g, "**");
+
+    const result = eval(input);
+    display.textContent = result.toString().length > 10 ? result.toPrecision(10) : result;
+    expr = result.toString();
+  } catch (e) {
+    display.textContent = "Error";
+  }
+}
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js');
+  }
+</script>
+</body>
+</html>
